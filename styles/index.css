@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+a {
+  cursor: pointer;
+}
+
+.search-floating-button {
+  position: fixed !important;
+  bottom: 1.25rem !important;
+  right: 1.25rem !important;
+  background-color: rgb(250 204 21) !important;
+}

@@ -1,0 +1,15 @@
+version: "3.7"
+services:
+  next:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    volumes:
+      - .:/home/node
+    environment:
+      - NODE_ENV=development
+    stdin_open: true
+    command:
+      sh -c 'npm install && npm run dev'
