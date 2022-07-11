@@ -60,7 +60,6 @@ type Params = {
 }
 
 export async function getStaticProps({ params }: Params) {
-  // const post = getPostBySlug()
   const allPosts = await getAllPosts({
     content_type: 'blogPost',
     'fields.slug': params.slug

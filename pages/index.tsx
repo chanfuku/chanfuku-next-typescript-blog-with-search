@@ -24,26 +24,26 @@ type Props = {
 const Index = ({ allPosts, allTags }: Props) => {
   const [posts, setPosts] = useState<Entry<IBlogPostFields>[]>(allPosts);
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedTags, setSelectedCategories] = useState<string[]>([]);
   const [keyword, setKeyword] = useState<string>('');
   const router = useRouter()
   const query = router.query
 
-  const search = ({ keyword, selectedCategories }: SearchType) => {
-    if (!keyword && !selectedCategories.length) {
+  const search = ({ keyword, selectedTags }: SearchType) => {
+    if (!keyword && !selectedTags.length) {
       setPosts(allPosts)
       return
     }
     const filtered = allPosts.filter((post: Entry<IBlogPostFields>) => {
       const keywordFound = keyword.length && (post.fields.title.includes(keyword) || post.fields.slug.includes(keyword) || post.fields.body.includes(keyword))
       if (keywordFound) return true
-      return selectedCategories.some((tag: string) => post.metadata.tags.map(v => v.sys.id).includes(tag))
+      return selectedTags.some((tag: string) => post.metadata.tags.map(v => v.sys.id).includes(tag))
     })
     setPosts(filtered)
   }
 
   const addOrRemove = (value: string) => {
-    const categorySet: Set<string> = new Set(selectedCategories);
+    const categorySet: Set<string> = new Set(selectedTags);
     if (categorySet.has(value)) {
       categorySet.delete(value)
     } else {
@@ -51,17 +51,17 @@ const Index = ({ allPosts, allTags }: Props) => {
     }
     const array = Array.from(categorySet)
     setSelectedCategories(array)
-    routerPush({ keyword, selectedCategories: array })
+    routerPush({ keyword, selectedTags: array })
   }
 
   const onKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value 
     setKeyword(keyword)
-    routerPush({ keyword, selectedCategories })
+    routerPush({ keyword, selectedTags })
   }
 
-  const routerPush = ({ keyword, selectedCategories }: SearchType) => {
-    router.push({ query: makeQuerySearchParams({keyword, selectedCategories}) }, undefined, { scroll: false })
+  const routerPush = ({ keyword, selectedTags }: SearchType) => {
+    router.push({ query: makeQuerySearchParams({keyword, selectedTags}) }, undefined, { scroll: false })
   }
 
   const handleClickOpen = () => setOpen(true)
@@ -69,12 +69,12 @@ const Index = ({ allPosts, allTags }: Props) => {
   const handleClose = () => setOpen(false)
 
   useEffect(() => {
-    const { keyword, selectedCategories } = getSearchParamsFromQuery(query)
+    const { keyword, selectedTags } = getSearchParamsFromQuery(query)
     setKeyword(keyword)
-    setSelectedCategories(selectedCategories)
-    search({ keyword, selectedCategories })
+    setSelectedCategories(selectedTags)
+    search({ keyword, selectedTags })
     // save in sessionStorage
-    setItemsToStorage({ keyword, selectedCategories })
+    setItemsToStorage({ keyword, selectedTags })
   }, [query])
 
   return (
@@ -90,7 +90,7 @@ const Index = ({ allPosts, allTags }: Props) => {
               <SearchDialog
                 open={open}
                 keyword={keyword}
-                selectedCategories={selectedCategories}
+                selectedTags={selectedTags}
                 allTags={allTags}
                 addOrRemove={addOrRemove}
                 onKeywordChange={onKeywordChange}
@@ -108,7 +108,7 @@ const Index = ({ allPosts, allTags }: Props) => {
           <section className="md:flex">
             <SearchBox
               keyword={keyword}
-              selectedCategories={selectedCategories}
+              selectedTags={selectedTags}
               allTags={allTags}
               addOrRemove={addOrRemove}
               onKeywordChange={onKeywordChange}

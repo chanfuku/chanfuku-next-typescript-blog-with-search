@@ -8,10 +8,10 @@ type Props = {
 const Header = ({ logoPosFixed = false }: Props) => {
   const router = useRouter()
   const toTopPage = () => {
-    const { keyword, selectedCategories } = getItemsFromStorage()
+    const { keyword, selectedTags } = getItemsFromStorage()
     router.push({
       pathname: '/',
-      query: makeQuerySearchParams({ keyword, selectedCategories })
+      query: makeQuerySearchParams({ keyword, selectedTags })
     })
   }
 

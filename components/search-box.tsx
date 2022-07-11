@@ -3,13 +3,13 @@ import { Tag } from 'contentful'
 
 type Props = {
   keyword: string
-  selectedCategories: string[]
+  selectedTags: string[]
   allTags: Tag[],
   addOrRemove: (value: string) => void
   onKeywordChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const SearchBox = ({ keyword, selectedCategories, allTags, addOrRemove, onKeywordChange }: Props) => {
+const SearchBox = ({ keyword, selectedTags, allTags, addOrRemove, onKeywordChange }: Props) => {
   return (
     <div className="basis-1/4 mr-10 mb-3">
       {!isMobileSize() &&
@@ -25,7 +25,7 @@ const SearchBox = ({ keyword, selectedCategories, allTags, addOrRemove, onKeywor
                   <input
                     onChange={ () => addOrRemove(tag.sys.id) }
                     type="checkbox" id={tag.name}
-                    checked={ selectedCategories.includes(tag.sys.id) }
+                    checked={ selectedTags.includes(tag.sys.id) }
                   />
                   <label htmlFor={tag.name}> {tag.name} </label>
                 </li>

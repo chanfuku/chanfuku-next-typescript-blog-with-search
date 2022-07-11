@@ -8,14 +8,14 @@ import { Tag } from 'contentful'
 type Props = {
   open: boolean
   keyword: string
-  selectedCategories: string[]
+  selectedTags: string[]
   allTags: Tag[]
   addOrRemove: (value: string)  => void
   onKeywordChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onClose: () => void
 }
 
-const SearchDialog = ({ open, keyword, selectedCategories, allTags, addOrRemove, onKeywordChange, onClose }: Props) => {
+const SearchDialog = ({ open, keyword, selectedTags, allTags, addOrRemove, onKeywordChange, onClose }: Props) => {
   return (
     <Dialog onClose={onClose} open={open}>
       <DialogTitle>
@@ -44,7 +44,7 @@ const SearchDialog = ({ open, keyword, selectedCategories, allTags, addOrRemove,
                 <input
                   onChange={ () => addOrRemove(tag.sys.id) }
                   type="checkbox" id={tag.name}
-                  checked={ selectedCategories.includes(tag.sys.id) }
+                  checked={ selectedTags.includes(tag.sys.id) }
                 />
                 <label htmlFor={tag.name}> {tag.name} </label>
               </li>
