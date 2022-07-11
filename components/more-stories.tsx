@@ -1,8 +1,9 @@
 import PostPreview from './post-preview'
-import Post from '../types/post'
+import { Entry } from 'contentful'
+import { IPostFields, IBlogPostFields } from '../@types/generated/contentful'
 
 type Props = {
-  posts: Post[]
+  posts: Entry<IBlogPostFields>[]
 }
 
 const MoreStories = ({ posts }: Props) => {
@@ -14,15 +15,13 @@ const MoreStories = ({ posts }: Props) => {
       */}
       {/* <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-16 lg:gap-x-32 gap-y-20 md:gap-y-32 mb-32"> */}
       <div className="grid grid-cols-1 md:grid-cols-2 md:gap-x-16 lg:gap-x-32 gap-y-20 md:gap-y-16 mb-32">
-        {posts.map((post) => (
+        {posts.map(({ fields }) => (
           <PostPreview
-            key={post.slug}
-            title={post.title}
-            coverImage={post.coverImage}
-            date={post.date}
-            author={post.author}
-            slug={post.slug}
-            excerpt={post.excerpt}
+            key={fields.slug}
+            title={fields.title}
+            heroImage={fields.heroImage.fields.file.url}
+            publishDate={fields.publishDate}
+            slug={fields.slug}
           />
         ))}
       </div>

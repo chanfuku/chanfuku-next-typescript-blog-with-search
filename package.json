@@ -4,7 +4,8 @@
     "dev": "next -p 8002",
     "build": "next build",
     "start": "next start -p 8002",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "contentful-typescript-codegen": "contentful-typescript-codegen --output @types/generated/contentful.d.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",
@@ -13,7 +14,10 @@
     "@mui/material": "^5.8.5",
     "@types/react-lazy-load-image-component": "^1.5.2",
     "classnames": "2.3.1",
+    "contentful": "^9.1.32",
+    "contentful-management": "^10.8.0",
     "date-fns": "2.21.3",
+    "dotenv": "^16.0.1",
     "gray-matter": "4.0.3",
     "next": "latest",
     "react": "^17.0.2",
@@ -29,6 +33,7 @@
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
     "autoprefixer": "10.4.0",
+    "contentful-typescript-codegen": "^3.2.3",
     "postcss": "8.4.5",
     "tailwindcss": "3.0.5"
   }
