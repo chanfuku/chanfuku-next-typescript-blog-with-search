@@ -1,15 +1,15 @@
 import isMobileSize from '../lib/mediaQuery'
-import { SEARCH_CATEGORIES } from '../lib/constants'
+import { Tag } from 'contentful'
 
 type Props = {
   keyword: string
-  selectedCategories: number[]
-  addOrRemove: (value: number)  => void
+  selectedCategories: string[]
+  allTags: Tag[],
+  addOrRemove: (value: string) => void
   onKeywordChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  onOpen: () => void
 }
 
-const SearchBox = ({ keyword, selectedCategories, addOrRemove, onKeywordChange, onOpen }: Props) => {
+const SearchBox = ({ keyword, selectedCategories, allTags, addOrRemove, onKeywordChange }: Props) => {
   return (
     <div className="basis-1/4 mr-10 mb-3">
       {!isMobileSize() &&
@@ -20,14 +20,14 @@ const SearchBox = ({ keyword, selectedCategories, addOrRemove, onKeywordChange, 
           </ul>
           <ul>
             {
-              SEARCH_CATEGORIES.map((category) => (
-                <li key={ category.value } className='mb-1 mr-2'>
+              allTags.map((tag: Tag) => (
+                <li key={ tag.sys.id } className='mb-1 mr-2'>
                   <input
-                    onChange={ () => addOrRemove(category.value) }
-                    type="checkbox" id={category.label}
-                    checked={ selectedCategories.includes(category.value) }
+                    onChange={ () => addOrRemove(tag.sys.id) }
+                    type="checkbox" id={tag.name}
+                    checked={ selectedCategories.includes(tag.sys.id) }
                   />
-                  <label htmlFor={category.label}> {category.label} </label>
+                  <label htmlFor={tag.name}> {tag.name} </label>
                 </li>
               ))
             }

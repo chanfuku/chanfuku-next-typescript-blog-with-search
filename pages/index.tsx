@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Fab from '@mui/material/Fab'
+import { Entry, Tag } from 'contentful'
 import SearchIcon from '@mui/icons-material/Search'
 import Container from '../components/container'
 import SearchBox from '../components/search-box'
@@ -9,20 +10,21 @@ import SearchDialog from '../components/search-dialog'
 import MoreStories from '../components/more-stories'
 import Layout from '../components/layout'
 import Header from '../components/header'
-import { getAllPosts } from '../lib/api'
+import { getAllPosts, getAllTags } from '../lib/api'
 import isMobileSize from '../lib/mediaQuery'
 import { setItemsToStorage, getSearchParamsFromQuery, makeQuerySearchParams } from '../lib/search'
-import Post from '../types/post'
 import { SearchType } from '../types/search'
+import { IBlogPostFields } from '../@types/generated/contentful'
 
 type Props = {
-  allPosts: Post[]
+  allPosts: Entry<IBlogPostFields>[]
+  allTags: Tag[]
 }
 
-const Index = ({ allPosts }: Props) => {
-  const [posts, setPosts] = useState<Post[]>(allPosts);
+const Index = ({ allPosts, allTags }: Props) => {
+  const [posts, setPosts] = useState<Entry<IBlogPostFields>[]>(allPosts);
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [keyword, setKeyword] = useState<string>('');
   const router = useRouter()
   const query = router.query
@@ -32,16 +34,16 @@ const Index = ({ allPosts }: Props) => {
       setPosts(allPosts)
       return
     }
-    const filtered = allPosts.filter((post: Post) => {
-      const keywordFound = keyword.length && (post.title.includes(keyword) || post.slug.includes(keyword) || post.excerpt.includes(keyword))
+    const filtered = allPosts.filter((post: Entry<IBlogPostFields>) => {
+      const keywordFound = keyword.length && (post.fields.title.includes(keyword) || post.fields.slug.includes(keyword) || post.fields.body.includes(keyword))
       if (keywordFound) return true
-      return selectedCategories.some((category: number) => post.categories.includes(category))
+      return selectedCategories.some((tag: string) => post.metadata.tags.map(v => v.sys.id).includes(tag))
     })
     setPosts(filtered)
   }
 
-  const addOrRemove = (value: number) => {
-    const categorySet: Set<number> = new Set(selectedCategories);
+  const addOrRemove = (value: string) => {
+    const categorySet: Set<string> = new Set(selectedCategories);
     if (categorySet.has(value)) {
       categorySet.delete(value)
     } else {
@@ -89,6 +91,7 @@ const Index = ({ allPosts }: Props) => {
                 open={open}
                 keyword={keyword}
                 selectedCategories={selectedCategories}
+                allTags={allTags}
                 addOrRemove={addOrRemove}
                 onKeywordChange={onKeywordChange}
                 onClose={handleClose}
@@ -106,9 +109,9 @@ const Index = ({ allPosts }: Props) => {
             <SearchBox
               keyword={keyword}
               selectedCategories={selectedCategories}
+              allTags={allTags}
               addOrRemove={addOrRemove}
               onKeywordChange={onKeywordChange}
-              onOpen={handleClickOpen}
             />
             {posts.length > 0 && <MoreStories posts={posts} />}
           </section>
@@ -122,17 +125,12 @@ const Index = ({ allPosts }: Props) => {
 export default Index
 
 export const getStaticProps = async () => {
-  const allPosts = getAllPosts([
-    'title',
-    'date',
-    'slug',
-    'author',
-    'coverImage',
-    'excerpt',
-    'categories',
+  const [allPosts, allTags] = await Promise.all([
+    getAllPosts({ content_type: 'blogPost' }),
+    getAllTags(),
   ])
 
   return {
-    props: { allPosts },
+    props: { allPosts, allTags },
   }
 }

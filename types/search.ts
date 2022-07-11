@@ -1,10 +1,4 @@
 export type SearchType = {
   keyword: string,
-  selectedCategories: number[],
+  selectedCategories: string[],
 }
-
-export type SearchCategory = {
-  value: number,
-  label: string,
-}
-

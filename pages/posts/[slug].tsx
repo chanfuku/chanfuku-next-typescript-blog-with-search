@@ -1,30 +1,29 @@
 import { useRouter } from 'next/router'
 import ErrorPage from 'next/error'
+import { Entry } from 'contentful'
+import Head from 'next/head'
 import Container from '../../components/container'
 import PostBody from '../../components/post-body'
 import Header from '../../components/header'
 import PostHeader from '../../components/post-header'
 import Layout from '../../components/layout'
-import { getPostBySlug, getAllPosts } from '../../lib/api'
+import { getAllPosts } from '../../lib/api'
 import PostTitle from '../../components/post-title'
-import Head from 'next/head'
-import { CMS_NAME } from '../../lib/constants'
 import markdownToHtml from '../../lib/markdownToHtml'
-import PostType from '../../types/post'
+import { IBlogPostFields } from '../../@types/generated/contentful'
 
 type Props = {
-  post: PostType
-  morePosts: PostType[]
-  preview?: boolean
+  post: Entry<IBlogPostFields>,
+  content: string
 }
 
-const Post = ({ post, morePosts, preview }: Props) => {
+const Post = ({ post, content }: Props) => {
   const router = useRouter()
-  if (!router.isFallback && !post?.slug) {
+  if (!router.isFallback && !post.fields.slug) {
     return <ErrorPage statusCode={404} />
   }
   return (
-    <Layout preview={preview}>
+    <Layout preview={false}>
       <Container>
         <Header />
         {router.isFallback ? (
@@ -34,17 +33,16 @@ const Post = ({ post, morePosts, preview }: Props) => {
             <article className="mb-32">
               <Head>
                 <title>
-                  {post.title} | ブログ
+                  {post.fields.title} | ブログ
                 </title>
-                <meta property="og:image" content={post.ogImage.url} />
+                <meta property="og:image" content={post.fields.heroImage.fields.file.url} />
               </Head>
               <PostHeader
-                title={post.title}
-                coverImage={post.coverImage}
-                date={post.date}
-                author={post.author}
+                title={post.fields.title}
+                coverImage={post.fields.heroImage.fields.file.url}
+                date={post.fields.publishDate}
               />
-              <PostBody content={post.content} />
+              <PostBody content={content} />
             </article>
           </>
         )}
@@ -62,35 +60,33 @@ type Params = {
 }
 
 export async function getStaticProps({ params }: Params) {
-  const post = getPostBySlug(params.slug, [
-    'title',
-    'date',
-    'slug',
-    'author',
-    'content',
-    'ogImage',
-    'coverImage',
-  ])
-  const content = await markdownToHtml(post.content || '')
+  // const post = getPostBySlug()
+  const allPosts = await getAllPosts({
+    content_type: 'blogPost',
+    'fields.slug': params.slug
+  })
+  const post = allPosts.length ? allPosts[0] : undefined
+  
+  const content = post
+    ? await markdownToHtml(post.fields.body || '')
+    : undefined
 
   return {
     props: {
-      post: {
-        ...post,
-        content,
-      },
+      post,
+      content,
     },
   }
 }
 
 export async function getStaticPaths() {
-  const posts = getAllPosts(['slug'])
+  const allPosts = await getAllPosts({ content_type: 'blogPost' })
 
   return {
-    paths: posts.map((post) => {
+    paths: allPosts.map((post: Entry<IBlogPostFields>) => {
       return {
         params: {
-          slug: post.slug,
+          slug: post.fields.slug,
         },
       }
     }),

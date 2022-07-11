@@ -3,18 +3,19 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { SEARCH_CATEGORIES } from '../lib/constants'
+import { Tag } from 'contentful'
 
 type Props = {
   open: boolean
   keyword: string
-  selectedCategories: number[]
-  addOrRemove: (value: number)  => void
+  selectedCategories: string[]
+  allTags: Tag[]
+  addOrRemove: (value: string)  => void
   onKeywordChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onClose: () => void
 }
 
-const SearchDialog = ({ open, keyword, selectedCategories, addOrRemove, onKeywordChange, onClose }: Props) => {
+const SearchDialog = ({ open, keyword, selectedCategories, allTags, addOrRemove, onKeywordChange, onClose }: Props) => {
   return (
     <Dialog onClose={onClose} open={open}>
       <DialogTitle>
@@ -38,14 +39,14 @@ const SearchDialog = ({ open, keyword, selectedCategories, addOrRemove, onKeywor
         </ul>
         <ul>
           {
-            SEARCH_CATEGORIES.map((category) => (
-              <li key={ category.value } className='mb-1 mr-2'>
+            allTags.map((tag: Tag) => (
+              <li key={ tag.sys.id } className='mb-1 mr-2'>
                 <input
-                  onChange={ () => addOrRemove(category.value) }
-                  type="checkbox" id={ category.label }
-                  checked={ selectedCategories.includes(category.value) }
+                  onChange={ () => addOrRemove(tag.sys.id) }
+                  type="checkbox" id={tag.name}
+                  checked={ selectedCategories.includes(tag.sys.id) }
                 />
-                <label htmlFor={ category.label }> { category.label } </label>
+                <label htmlFor={tag.name}> {tag.name} </label>
               </li>
             ))
           }
