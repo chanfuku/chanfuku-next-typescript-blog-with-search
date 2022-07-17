@@ -106,13 +106,15 @@ const Index = ({ allPosts, allTags }: Props) => {
             </>
           }
           <section className="md:flex">
-            <SearchBox
-              keyword={keyword}
-              selectedTags={selectedTags}
-              allTags={allTags}
-              addOrRemove={addOrRemove}
-              onKeywordChange={onKeywordChange}
-            />
+            {!isMobileSize() &&
+              <SearchBox
+                keyword={keyword}
+                selectedTags={selectedTags}
+                allTags={allTags}
+                addOrRemove={addOrRemove}
+                onKeywordChange={onKeywordChange}
+              />
+            }
             {posts.length > 0 && <MoreStories posts={posts} />}
           </section>
           {/* <Pagination count={10} showFirstButton showLastButton /> */}
