@@ -33,7 +33,7 @@ const Post = ({ post, content }: Props) => {
             <article className="mb-32">
               <Head>
                 <title>
-                  {post.fields.title} | ブログ
+                  {post.fields.title} | デモサイト
                 </title>
                 <meta property="og:image" content={post.fields.heroImage.fields.file.url} />
               </Head>

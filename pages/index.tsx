@@ -81,10 +81,10 @@ const Index = ({ allPosts, allTags }: Props) => {
     <>
       <Layout>
         <Head>
-          <title>ブログ</title>
+          <title>デモサイト</title>
         </Head>
         <Container>
-          <Header logoPosFixed={!isMobileSize()} />
+          <Header />
           {isMobileSize() &&
             <>
               <SearchDialog
