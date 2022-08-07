@@ -32,7 +32,8 @@ export const getSearchResult = ({ keyword, selectedTags }: SearchType, allPosts:
     return allPosts
   }
   const filtered = allPosts.filter((post: Entry<IBlogPostFields>) => {
-    const keywordFound = keyword.length && (post.fields.title.includes(keyword) || post.fields.slug.includes(keyword) || post.fields.body.includes(keyword))
+    const keywordFound = keyword.length && 
+      (post.fields.title.includes(keyword) || post.fields.slug.includes(keyword) || post.fields.body.includes(keyword) || post.fields.description.includes(keyword))
     if (keywordFound) return true
     return selectedTags.some((tag: string) => post.metadata.tags.map(v => v.sys.id).includes(tag))
   })
