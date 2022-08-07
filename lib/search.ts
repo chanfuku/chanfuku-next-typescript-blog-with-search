@@ -1,6 +1,8 @@
 
 import { ParsedUrlQuery } from 'querystring'
 import { SearchType } from '../types/search'
+import { Entry } from 'contentful'
+import { IBlogPostFields } from '../@types/generated/contentful'
 
 export const setItemsToStorage = ({ keyword, selectedTags }: SearchType) => {
   sessionStorage.setItem('keyword', keyword)
@@ -23,4 +25,26 @@ export const getSearchParamsFromQuery = (query: ParsedUrlQuery): SearchType => {
 
 export const makeQuerySearchParams = ({ keyword, selectedTags }: SearchType) => {
   return { keyword, tags: selectedTags.join(',') }
+}
+
+export const getSearchResult = ({ keyword, selectedTags }: SearchType, allPosts: Entry<IBlogPostFields>[]): Entry<IBlogPostFields>[] => {
+  if (!keyword && !selectedTags.length) {
+    return allPosts
+  }
+  const filtered = allPosts.filter((post: Entry<IBlogPostFields>) => {
+    const keywordFound = keyword.length && (post.fields.title.includes(keyword) || post.fields.slug.includes(keyword) || post.fields.body.includes(keyword))
+    if (keywordFound) return true
+    return selectedTags.some((tag: string) => post.metadata.tags.map(v => v.sys.id).includes(tag))
+  })
+  return filtered
+}
+
+export const getSelectedTags = (selectedTags: string[], value: string): string[] => {
+  const tagSet: Set<string> = new Set(selectedTags)
+  if (tagSet.has(value)) {
+    tagSet.delete(value)
+  } else {
+    tagSet.add(value)
+  }
+  return Array.from(tagSet)
 }
