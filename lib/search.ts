@@ -1,4 +1,5 @@
 
+import { useState } from 'react'
 import { ParsedUrlQuery } from 'querystring'
 import { SearchType } from '../types/search'
 import { Entry } from 'contentful'
@@ -27,14 +28,19 @@ export const makeQuerySearchParams = ({ keyword, selectedTags }: SearchType) => 
   return { keyword, tags: selectedTags.join(',') }
 }
 
-export const getSearchResult = ({ keyword, selectedTags }: SearchType, allPosts: Entry<IBlogPostFields>[]): Entry<IBlogPostFields>[] => {
-  if (!keyword && !selectedTags.length) {
-    return allPosts
-  }
-  const filtered = allPosts.filter((post: Entry<IBlogPostFields>) => {
+export const getSearchResultByKeyword = ({ keyword, posts }: { keyword: SearchType['keyword'], posts: Entry<IBlogPostFields>[]}): Entry<IBlogPostFields>[] => {
+  if (!keyword) return posts
+  const filtered = posts.filter((post: Entry<IBlogPostFields>) => {
     const keywordFound = keyword.length && 
       (post.fields.title.includes(keyword) || post.fields.slug.includes(keyword) || post.fields.body.includes(keyword) || post.fields.description.includes(keyword))
-    if (keywordFound) return true
+    return keywordFound
+  })
+  return filtered
+}
+
+export const getSearchResultBySelectedTags = ({ selectedTags, posts }: { selectedTags: SearchType['selectedTags'], posts: Entry<IBlogPostFields>[]}): Entry<IBlogPostFields>[] => {
+  if (!selectedTags.length) return posts
+  const filtered = posts.filter((post: Entry<IBlogPostFields>) => {
     return selectedTags.some((tag: string) => post.metadata.tags.map(v => v.sys.id).includes(tag))
   })
   return filtered
@@ -48,4 +54,33 @@ export const getSelectedTags = (selectedTags: string[], value: string): string[]
     tagSet.add(value)
   }
   return Array.from(tagSet)
+}
+
+export const useSearch = (allPosts: Entry<IBlogPostFields>[]) => {
+  const [posts, setPosts] = useState<Entry<IBlogPostFields>[]>(allPosts);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [keyword, setKeyword] = useState<string>('');
+
+  const handleSearchResultByKeyword = ((keyword: string, posts: Entry<IBlogPostFields>[]) => {
+    return getSearchResultByKeyword({ keyword, posts })
+  })
+  const handleSearchResult = ({ keyword, selectedTags }: SearchType) => {
+    const keywordSearchResult = handleSearchResultByKeyword(keyword, allPosts)
+    const finalResult = getSearchResultBySelectedTags({ selectedTags, posts: keywordSearchResult })
+    setKeyword(keyword)
+    setSelectedTags(selectedTags)
+    setPosts(finalResult)
+  }
+  const handleSelectedTags = (value: string) => {
+    const currentSelectedTags = getSelectedTags(selectedTags, value)
+    return currentSelectedTags
+  }
+
+  return {
+    posts,
+    keyword,
+    selectedTags,
+    handleSelectedTags,
+    handleSearchResult,
+  }
 }

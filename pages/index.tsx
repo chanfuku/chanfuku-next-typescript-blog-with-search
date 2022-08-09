@@ -12,7 +12,7 @@ import Layout from '../components/layout'
 import Header from '../components/header'
 import { getAllPosts, getAllTags } from '../lib/api'
 import isMobileSize from '../lib/mediaQuery'
-import { setItemsToStorage, getSearchParamsFromQuery, makeQuerySearchParams, getSearchResult, getSelectedTags } from '../lib/search'
+import { setItemsToStorage, getSearchParamsFromQuery, makeQuerySearchParams, useSearch } from '../lib/search'
 import { SearchType } from '../types/search'
 import { IBlogPostFields } from '../@types/generated/contentful'
 
@@ -22,27 +22,18 @@ type Props = {
 }
 
 const Index = ({ allPosts, allTags }: Props) => {
-  const [posts, setPosts] = useState<Entry<IBlogPostFields>[]>(allPosts);
   const [open, setOpen] = useState<boolean>(false);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [keyword, setKeyword] = useState<string>('');
+  const { posts, keyword, selectedTags, handleSelectedTags, handleSearchResult } = useSearch(allPosts);
   const router = useRouter()
   const query = router.query
 
-  const setSearchResult = ({ keyword, selectedTags }: SearchType) => {
-    const searchResult = getSearchResult({ keyword, selectedTags }, allPosts)
-    setPosts(searchResult)
-  }
-
   const addOrRemove = (value: string) => {
-    const currentSelectedTags = getSelectedTags(selectedTags, value)
-    setSelectedTags(currentSelectedTags)
+    const currentSelectedTags = handleSelectedTags(value)
     routerPush({ keyword, selectedTags: currentSelectedTags })
   }
 
   const onKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const keyword = e.target.value 
-    setKeyword(keyword)
     routerPush({ keyword, selectedTags })
   }
 
@@ -56,9 +47,7 @@ const Index = ({ allPosts, allTags }: Props) => {
 
   useEffect(() => {
     const { keyword, selectedTags } = getSearchParamsFromQuery(query)
-    setKeyword(keyword)
-    setSelectedTags(selectedTags)
-    setSearchResult({ keyword, selectedTags })
+    handleSearchResult({ keyword, selectedTags })
     // save in sessionStorage
     setItemsToStorage({ keyword, selectedTags })
   }, [query])
