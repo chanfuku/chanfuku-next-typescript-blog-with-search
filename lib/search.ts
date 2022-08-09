@@ -1,5 +1,3 @@
-
-import { useState } from 'react'
 import { ParsedUrlQuery } from 'querystring'
 import { SearchType } from '../types/search'
 import { Entry } from 'contentful'
@@ -54,33 +52,4 @@ export const getSelectedTags = (selectedTags: string[], value: string): string[]
     tagSet.add(value)
   }
   return Array.from(tagSet)
-}
-
-export const useSearch = (allPosts: Entry<IBlogPostFields>[]) => {
-  const [posts, setPosts] = useState<Entry<IBlogPostFields>[]>(allPosts);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [keyword, setKeyword] = useState<string>('');
-
-  const handleSearchResultByKeyword = ((keyword: string, posts: Entry<IBlogPostFields>[]) => {
-    return getSearchResultByKeyword({ keyword, posts })
-  })
-  const handleSearchResult = ({ keyword, selectedTags }: SearchType) => {
-    const keywordSearchResult = handleSearchResultByKeyword(keyword, allPosts)
-    const finalResult = getSearchResultBySelectedTags({ selectedTags, posts: keywordSearchResult })
-    setKeyword(keyword)
-    setSelectedTags(selectedTags)
-    setPosts(finalResult)
-  }
-  const handleSelectedTags = (value: string) => {
-    const currentSelectedTags = getSelectedTags(selectedTags, value)
-    return currentSelectedTags
-  }
-
-  return {
-    posts,
-    keyword,
-    selectedTags,
-    handleSelectedTags,
-    handleSearchResult,
-  }
 }
