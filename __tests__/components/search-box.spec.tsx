@@ -39,7 +39,7 @@ test('検索ワードが入力された状態で表示されること', () => {
       keyword="キーワード"
       selectedTags={[]}
       allTags={allTags}
-      addOrRemove={jest.fn()}
+      onAddOrRemoveTag={jest.fn()}
       onKeywordChange={jest.fn()}
     />
   )
@@ -54,7 +54,7 @@ test('いくつかのcheckboxがcheckedの状態で表示されること', () =>
       keyword=""
       selectedTags={["tag1", "tag2"]}
       allTags={allTags}
-      addOrRemove={jest.fn()}
+      onAddOrRemoveTag={jest.fn()}
       onKeywordChange={jest.fn()}
     />
   )

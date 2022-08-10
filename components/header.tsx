@@ -8,7 +8,11 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import { getItemsFromStorage, makeQuerySearchParams } from '../lib/search'
 
-const Header = () => {
+type Props = {
+  logoPosFixed?: boolean
+}
+
+const Header = ({ logoPosFixed = false }: Props) => {
   const router = useRouter()
   const { user, isLoading } = useUser()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -24,16 +28,21 @@ const Header = () => {
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
-  };
+  }
   const handleClose = () => {
     setAnchorEl(null)
     router.push('/api/auth/logout')
-  };
+  }
+
+  let sectionClassName = 'mt-5 mb-16 flex justify-between'
+  if (logoPosFixed) {
+    sectionClassName += ' h-14'
+  }
 
   return (
-    <section className='mt-5 mb-16 flex justify-between'>
+    <section className={sectionClassName}>
       <h2>
-        <a onClick={toTopPage}><img src="http://placehold.jp/3d4070/ffffff/200x50.png?text=logo" alt="サンプルブログ" /></a>
+        <a className={logoPosFixed ? 'fixed top-4' : ''} onClick={toTopPage}><img src="http://placehold.jp/3d4070/ffffff/200x50.png?text=logo" alt="サンプルブログ" /></a>
       </h2>
       {!isLoading && !user && (
         <a href="/api/auth/login">

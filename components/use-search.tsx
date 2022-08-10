@@ -9,26 +9,18 @@ export const useSearch = (allPosts: Entry<IBlogPostFields>[]) => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [keyword, setKeyword] = useState<string>('');
 
-  const handleSearchResultByKeyword = ((keyword: string, posts: Entry<IBlogPostFields>[]) => {
-    return getSearchResultByKeyword({ keyword, posts })
-  })
   const handleSearchResult = ({ keyword, selectedTags }: SearchType) => {
-    const keywordSearchResult = handleSearchResultByKeyword(keyword, allPosts)
+    const keywordSearchResult = getSearchResultByKeyword({ keyword, posts: allPosts })
     const finalResult = getSearchResultBySelectedTags({ selectedTags, posts: keywordSearchResult })
     setKeyword(keyword)
     setSelectedTags(selectedTags)
     setPosts(finalResult)
-  }
-  const handleSelectedTags = (value: string) => {
-    const currentSelectedTags = getSelectedTags(selectedTags, value)
-    return currentSelectedTags
   }
 
   return {
     posts,
     keyword,
     selectedTags,
-    handleSelectedTags,
     handleSearchResult,
   }
 }

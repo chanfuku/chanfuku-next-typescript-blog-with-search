@@ -13,7 +13,7 @@ import Header from '../components/header'
 import { useSearch } from '../components/use-search'
 import { getAllPosts, getAllTags } from '../lib/api'
 import isMobileSize from '../lib/mediaQuery'
-import { setItemsToStorage, getSearchParamsFromQuery, makeQuerySearchParams } from '../lib/search'
+import { setItemsToStorage, getSearchParamsFromQuery, makeQuerySearchParams, getSelectedTags } from '../lib/search'
 import { SearchType } from '../types/search'
 import { IBlogPostFields } from '../@types/generated/contentful'
 
@@ -24,12 +24,12 @@ type Props = {
 
 const Index = ({ allPosts, allTags }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
-  const { posts, keyword, selectedTags, handleSelectedTags, handleSearchResult } = useSearch(allPosts);
+  const { posts, keyword, selectedTags, handleSearchResult } = useSearch(allPosts);
   const router = useRouter()
   const query = router.query
 
-  const addOrRemove = (value: string) => {
-    const currentSelectedTags = handleSelectedTags(value)
+  const onAddOrRemoveTag = (value: string) => {
+    const currentSelectedTags = getSelectedTags(selectedTags, value)
     routerPush({ keyword, selectedTags: currentSelectedTags })
   }
 
@@ -60,7 +60,7 @@ const Index = ({ allPosts, allTags }: Props) => {
           <title>デモサイト</title>
         </Head>
         <Container>
-          <Header />
+          <Header logoPosFixed={true} />
           {isMobileSize() &&
             <>
               <SearchDialog
@@ -68,7 +68,7 @@ const Index = ({ allPosts, allTags }: Props) => {
                 keyword={keyword}
                 selectedTags={selectedTags}
                 allTags={allTags}
-                addOrRemove={addOrRemove}
+                onAddOrRemoveTag={onAddOrRemoveTag}
                 onKeywordChange={onKeywordChange}
                 onClose={handleClose}
               />
@@ -87,7 +87,7 @@ const Index = ({ allPosts, allTags }: Props) => {
                 keyword={keyword}
                 selectedTags={selectedTags}
                 allTags={allTags}
-                addOrRemove={addOrRemove}
+                onAddOrRemoveTag={onAddOrRemoveTag}
                 onKeywordChange={onKeywordChange}
               />
             }

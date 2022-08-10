@@ -10,12 +10,12 @@ type Props = {
   keyword: string
   selectedTags: string[]
   allTags: Tag[]
-  addOrRemove: (value: string)  => void
+  onAddOrRemoveTag: (value: string)  => void
   onKeywordChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   onClose: () => void
 }
 
-const SearchDialog = ({ open, keyword, selectedTags, allTags, addOrRemove, onKeywordChange, onClose }: Props) => {
+const SearchDialog = ({ open, keyword, selectedTags, allTags, onAddOrRemoveTag, onKeywordChange, onClose }: Props) => {
   return (
     <Dialog onClose={onClose} open={open}>
       <DialogTitle>
@@ -42,7 +42,7 @@ const SearchDialog = ({ open, keyword, selectedTags, allTags, addOrRemove, onKey
             allTags.map((tag: Tag) => (
               <li key={ tag.sys.id } className='mb-1 mr-2'>
                 <input
-                  onChange={ () => addOrRemove(tag.sys.id) }
+                  onChange={ () => onAddOrRemoveTag(tag.sys.id) }
                   type="checkbox" id={tag.name}
                   checked={ selectedTags.includes(tag.sys.id) }
                 />
