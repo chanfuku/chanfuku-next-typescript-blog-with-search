@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { Tag } from 'contentful'
 import SearchBox from '../../components/search-box'
 
-const allTags: Tag[] = [
+export const allTags: Tag[] = [
   {
     name: 'tag1名',
     sys: {

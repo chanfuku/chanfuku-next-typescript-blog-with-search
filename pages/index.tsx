@@ -24,7 +24,7 @@ type Props = {
 
 const Index = ({ allPosts, allTags }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
-  const { posts, keyword, selectedTags, handleSearchResult } = useSearch(allPosts);
+  const { posts, keyword, selectedTags, handleSearch } = useSearch(allPosts);
   const router = useRouter()
   const query = router.query
 
@@ -48,7 +48,7 @@ const Index = ({ allPosts, allTags }: Props) => {
 
   useEffect(() => {
     const { keyword, selectedTags } = getSearchParamsFromQuery(query)
-    handleSearchResult({ keyword, selectedTags })
+    handleSearch({ keyword, selectedTags })
     // save in sessionStorage
     setItemsToStorage({ keyword, selectedTags })
   }, [query])

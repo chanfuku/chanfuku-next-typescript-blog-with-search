@@ -6,7 +6,7 @@ describe('useSearch', () => {
   test('keyword=test1, tag=tag1が検索ヒットする', () => {
     const { result } = renderHook(() => useSearch(allPosts))
     act(() => {
-      result.current.handleSearchResult({ keyword: 'test1', selectedTags: ['tag1'] })
+      result.current.handleSearch({ keyword: 'test1', selectedTags: ['tag1'] })
     })
 
     expect(result.current.posts).toStrictEqual([post1])
@@ -16,7 +16,7 @@ describe('useSearch', () => {
   test('keyword=test1, tag=tag1,tag2が検索ヒットする', () => {
     const { result } = renderHook(() => useSearch(allPosts))
     act(() => {
-      result.current.handleSearchResult({ keyword: 'test1', selectedTags: ['tag1', 'tag2'] })
+      result.current.handleSearch({ keyword: 'test1', selectedTags: ['tag1', 'tag2'] })
     })
 
     expect(result.current.posts).toStrictEqual([post1])
@@ -26,7 +26,7 @@ describe('useSearch', () => {
   test('keyword=test1, tag=tag2で検索ヒットしない', () => {
     const { result } = renderHook(() => useSearch(allPosts))
     act(() => {
-      result.current.handleSearchResult({ keyword: 'test1', selectedTags: ['tag2'] })
+      result.current.handleSearch({ keyword: 'test1', selectedTags: ['tag2'] })
     })
 
     expect(result.current.posts).toStrictEqual([])
