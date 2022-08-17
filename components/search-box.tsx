@@ -14,7 +14,9 @@ const SearchBox = ({ keyword, selectedTags, allTags, onAddOrRemoveTag, onKeyword
       <div className='fixed'>
         <p className="font-bold mb-3">検索条件</p>
         <ul>
-          <li className='mb-3'><input onChange={onKeywordChange} type="text" className="border p-2" id="name" placeholder="キーワード検索" value={keyword} /></li>
+          <li className='mb-3'>
+            <input onChange={onKeywordChange} type="text" className="border p-2" style={{ maxWidth: '200px' }} id="name" placeholder="キーワード検索" value={keyword} />
+          </li>
         </ul>
         <ul>
           {
