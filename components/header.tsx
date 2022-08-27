@@ -8,6 +8,7 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import { makeQuerySearchParams } from '../lib/search'
 import { useQueryData } from '../components/use-query-data'
+import { SearchType, GlobalStateKeys } from '../types/search'
 
 type Props = {
   logoPosFixed?: boolean
@@ -16,15 +17,14 @@ type Props = {
 const Header = ({ logoPosFixed = false }: Props) => {
   const router = useRouter()
   const { user, isLoading } = useUser()
-  const { getSearchKeywordAndTags } = useQueryData()
+  const [getSearchQuery, _] = useQueryData<SearchType>(GlobalStateKeys.searchQuery)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
   const toTopPage = () => {
-    const { keyword, selectedTags } = getSearchKeywordAndTags()
     router.push({
       pathname: '/',
-      query: makeQuerySearchParams({ keyword, selectedTags })
+      query: makeQuerySearchParams(getSearchQuery() as SearchType)
     })
   }
 

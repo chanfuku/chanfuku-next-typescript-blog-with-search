@@ -15,7 +15,7 @@ import { useQueryData } from '../components/use-query-data'
 import { getAllPosts, getAllTags } from '../lib/api'
 import isMobileSize from '../lib/mediaQuery'
 import { getSearchParamsFromQuery, makeQuerySearchParams, getSelectedTags } from '../lib/search'
-import { SearchType } from '../types/search'
+import { SearchType, GlobalStateKeys } from '../types/search'
 import { IBlogPostFields } from '../@types/generated/contentful'
 
 type Props = {
@@ -24,9 +24,9 @@ type Props = {
 }
 
 const Index = ({ allPosts, allTags }: Props) => {
-  const [open, setOpen] = useState<boolean>(false);
-  const { posts, keyword, selectedTags, handleSearch } = useSearch(allPosts);
-  const { setSearchKeywordAndTags } = useQueryData()
+  const [open, setOpen] = useState<boolean>(false)
+  const { posts, keyword, selectedTags, handleSearch } = useSearch(allPosts)
+  const [_, setSearchQuery] = useQueryData<SearchType>(GlobalStateKeys.searchQuery)
 
   const router = useRouter()
   const query = router.query
@@ -53,7 +53,7 @@ const Index = ({ allPosts, allTags }: Props) => {
     const { keyword, selectedTags } = getSearchParamsFromQuery(query)
     handleSearch({ keyword, selectedTags })
     // save in global state
-    setSearchKeywordAndTags({ keyword, selectedTags })
+    setSearchQuery({ keyword, selectedTags })
   }, [query])
 
   return (

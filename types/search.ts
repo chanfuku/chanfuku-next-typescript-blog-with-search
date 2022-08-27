@@ -4,7 +4,6 @@ export type SearchType = {
 }
 
 export const GlobalStateKeys = {
-  keyword: 'keyword',
-  selectedTags: 'selectedTags',
+  searchQuery: 'searchQuery',
 } as const
 export type GlobalStateKeyType = typeof GlobalStateKeys[keyof typeof GlobalStateKeys]

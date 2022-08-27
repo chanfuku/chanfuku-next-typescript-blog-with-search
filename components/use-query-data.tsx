@@ -1,23 +1,15 @@
 import { useQueryClient } from 'react-query'
-import { SearchType, GlobalStateKeys } from '../types/search'
-import { setQueryData, getQueryData } from '../lib/reactQuery'
+import { GlobalStateKeyType } from '../types/search'
 
-export const useQueryData = () => {
+export function useQueryData<T>(key: GlobalStateKeyType):[() => T | undefined, (value: T) => void] {
   const queryClient = useQueryClient()
 
-  const setSearchKeywordAndTags = ({ keyword, selectedTags }: SearchType): void => {
-    setQueryData(queryClient, GlobalStateKeys.keyword, keyword)
-    setQueryData(queryClient, GlobalStateKeys.selectedTags, selectedTags)
+  const getStateValue = (): T | undefined => {
+    return queryClient.getQueryData(key)
+  }
+  const setStateValue = (value: T): void => {
+    queryClient.setQueryData(key, value)
   }
 
-  const getSearchKeywordAndTags = (): SearchType => {
-    const keyword: string = getQueryData(queryClient, GlobalStateKeys.keyword) ?? ''
-    const selectedTags: string[] = getQueryData(queryClient, GlobalStateKeys.selectedTags) ?? []
-    return { keyword, selectedTags }
-  }
-
-  return {
-    setSearchKeywordAndTags,
-    getSearchKeywordAndTags,
-  }
+  return [getStateValue, setStateValue]
 }
