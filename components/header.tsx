@@ -6,7 +6,8 @@ import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import { getItemsFromStorage, makeQuerySearchParams } from '../lib/search'
+import { makeQuerySearchParams } from '../lib/search'
+import { useQueryData } from '../components/use-query-data'
 
 type Props = {
   logoPosFixed?: boolean
@@ -15,11 +16,12 @@ type Props = {
 const Header = ({ logoPosFixed = false }: Props) => {
   const router = useRouter()
   const { user, isLoading } = useUser()
+  const { getSearchKeywordAndTags } = useQueryData()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
   const toTopPage = () => {
-    const { keyword, selectedTags } = getItemsFromStorage()
+    const { keyword, selectedTags } = getSearchKeywordAndTags()
     router.push({
       pathname: '/',
       query: makeQuerySearchParams({ keyword, selectedTags })

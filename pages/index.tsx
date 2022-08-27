@@ -11,9 +11,10 @@ import MoreStories from '../components/more-stories'
 import Layout from '../components/layout'
 import Header from '../components/header'
 import { useSearch } from '../components/use-search'
+import { useQueryData } from '../components/use-query-data'
 import { getAllPosts, getAllTags } from '../lib/api'
 import isMobileSize from '../lib/mediaQuery'
-import { setItemsToStorage, getSearchParamsFromQuery, makeQuerySearchParams, getSelectedTags } from '../lib/search'
+import { getSearchParamsFromQuery, makeQuerySearchParams, getSelectedTags } from '../lib/search'
 import { SearchType } from '../types/search'
 import { IBlogPostFields } from '../@types/generated/contentful'
 
@@ -25,6 +26,8 @@ type Props = {
 const Index = ({ allPosts, allTags }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
   const { posts, keyword, selectedTags, handleSearch } = useSearch(allPosts);
+  const { setSearchKeywordAndTags } = useQueryData()
+
   const router = useRouter()
   const query = router.query
 
@@ -49,8 +52,8 @@ const Index = ({ allPosts, allTags }: Props) => {
   useEffect(() => {
     const { keyword, selectedTags } = getSearchParamsFromQuery(query)
     handleSearch({ keyword, selectedTags })
-    // save in sessionStorage
-    setItemsToStorage({ keyword, selectedTags })
+    // save in global state
+    setSearchKeywordAndTags({ keyword, selectedTags })
   }, [query])
 
   return (
